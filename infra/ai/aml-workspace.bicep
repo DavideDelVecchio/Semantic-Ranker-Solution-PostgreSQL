@@ -16,6 +16,9 @@ param appInsightsName string = 'appi-${workspaceName}-${uniqueString(resourceGro
 @description('Unique name for the Storage Account instance.')
 param storageAccountName string = 'sa${uniqueString(resourceGroup().id)}'
 
+@description('Log Analytics resource name')
+param logAnalyticsWorkspaceName string= 'law-${uniqueString(resourceGroup().id)}'
+
 resource keyVault 'Microsoft.KeyVault/vaults@2021-10-01' = {
   name: keyVaultName
   location: location
@@ -35,6 +38,22 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   kind: 'web'
   properties: {
     Application_Type: 'web'
+    WorkspaceResourceId: logAnalyticsWorkspace.id
+    Flow_Type: 'Bluefield'
+
+  }
+}
+
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' = {
+  name: logAnalyticsWorkspaceName
+  location: location
+  properties: {
+    sku: {
+      name: 'PerGB2018'
+    }
+    retentionInDays: 30
+    publicNetworkAccessForIngestion: 'Enabled'
+    publicNetworkAccessForQuery: 'Disabled'
   }
 }
 

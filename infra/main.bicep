@@ -18,6 +18,7 @@ param location string
   'eastus'
   'eastus2'
   'japaneast'
+  'switzerlandnorth'
 ])
 @metadata({
   azd: {
